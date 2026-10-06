@@ -1,8 +1,10 @@
 import { addDays, todayIso } from './format.ts'
+import { paidBilling } from './plans.ts'
 import type { AppState } from './types.ts'
 
 export const DEMO_PIN = '2026'
 export const ADMIN_EMAIL = 'ajithkutten1998@gmail.com'
+export const ADMIN_PASSWORD = 'AjithBoutique98@'
 export const STUDIO_EMAIL = 'priya@meenakshi.atelier'
 
 const today = todayIso()
@@ -22,6 +24,8 @@ export function seedState(): AppState {
         garments: ['Blouses', 'Lehengas', 'Bridal Wear', 'Custom Tailoring'],
         teamSize: 'Boutique + Tailors',
         createdOn: '2025-11-02',
+        isDemo: true,
+        billing: paidBilling('studio_pro'),
       },
       {
         id: 'stu_lotus',
@@ -35,6 +39,7 @@ export function seedState(): AppState {
         garments: ['Sarees', 'Salwar / Churidar', 'Kids Wear'],
         teamSize: 'Small team',
         createdOn: '2026-01-18',
+        billing: paidBilling('studio'),
       },
     ],
     users: [
@@ -44,7 +49,7 @@ export function seedState(): AppState {
         role: 'admin',
         studioId: null,
         isAdmin: true,
-        password: DEMO_PIN,
+        password: ADMIN_PASSWORD,
       },
       {
         email: STUDIO_EMAIL,

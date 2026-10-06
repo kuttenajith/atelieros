@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { Button } from '../components/Button.tsx'
 import { Field, Input } from '../components/Field.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
-import { currentUser, studio, updateStudio } from '../lib/store.ts'
+import { planName } from '../lib/plans.ts'
+import { billingOf, currentUser, studio, updateStudio } from '../lib/store.ts'
 
 export function Settings() {
   const s = studio()
@@ -39,6 +41,16 @@ export function Settings() {
         <Button type="submit">Save studio</Button>
         {saved ? <p className="text-sm text-success">Saved.</p> : null}
       </form>
+      <article className="mt-6 rounded-2xl border border-line bg-surface p-5">
+        <p className="text-xs uppercase tracking-wide text-mute">Your plan</p>
+        <p className="mt-1 font-display text-3xl">{planName(billingOf(s).plan)}</p>
+        <p className="mt-1 text-sm text-mute">
+          {billingOf(s).status === 'trialing' ? `Trial until ${billingOf(s).trialEndsOn}` : `Renewal ${billingOf(s).periodEndsOn || '—'}`}
+        </p>
+        <Link to="/app/billing" className="mt-4 inline-block">
+          <Button tone="ghost">Manage subscription</Button>
+        </Link>
+      </article>
     </div>
   )
 }

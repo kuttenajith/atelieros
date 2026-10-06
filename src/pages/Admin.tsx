@@ -5,7 +5,8 @@ import { Input } from '../components/Field.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
 import { StatusPill } from '../components/StatusPill.tsx'
 import { money } from '../lib/format.ts'
-import { dueFor, impersonateStudio, resetDemo, useApp } from '../lib/store.ts'
+import { dueFor, impersonateStudio, resetDemo, activatePlan, billingOf, useApp } from '../lib/store.ts'
+import { planName } from '../lib/plans.ts'
 
 export function Admin() {
   const data = useApp()
@@ -69,6 +70,10 @@ export function Admin() {
                   </span>
                 </span>
                 <span className="flex flex-wrap gap-4 text-sm">
+                  <span className="rounded-full bg-bg px-2 py-0.5 text-xs uppercase tracking-wide">
+                    {s.isDemo ? 'Demo' : planName(billingOf(s).plan)}
+                    {billingOf(s).requestedPlan ? ` · wants ${planName(billingOf(s).requestedPlan)}` : ''}
+                  </span>
                   <span>{customers.length} clients</span>
                   <span>{orders.length} orders</span>
                   <span>{money(collected)} in</span>
@@ -86,8 +91,18 @@ export function Admin() {
                     >
                       Open as studio
                     </Button>
+                    {!s.isDemo ? (
+                      <>
+                        <Button tone="ghost" onClick={() => activatePlan(s.id, 'studio')}>
+                          {billingOf(s).requestedPlan === 'studio' ? 'Approve Studio' : 'Set Studio ₹999'}
+                        </Button>
+                        <Button tone="ghost" onClick={() => activatePlan(s.id, 'studio_pro')}>
+                          {billingOf(s).requestedPlan === 'studio_pro' ? 'Approve Pro' : 'Set Pro ₹1,500'}
+                        </Button>
+                      </>
+                    ) : null}
                     <p className="self-center text-sm text-mute">
-                      {s.phone} · {s.garments.join(', ')} · {s.teamSize}
+                      {s.phone} · {planName(billingOf(s).plan)} · {billingOf(s).status} until {billingOf(s).periodEndsOn || billingOf(s).trialEndsOn}
                     </p>
                   </div>
                   <div className="grid gap-4 lg:grid-cols-2">

@@ -12,6 +12,8 @@ import {
   Truck,
   Users,
   Ruler,
+  MessageCircle,
+  BarChart3,
 } from 'lucide-react'
 import { BrandMark } from '../components/BrandMark.tsx'
 import { CommandPalette } from '../components/CommandPalette.tsx'
@@ -34,9 +36,12 @@ const nav = [
   ]},
   { group: 'BUSINESS', items: [
     { to: '/app/payments', label: 'Payments', icon: CreditCard },
+    { to: '/app/whatsapp', label: 'WhatsApp', icon: MessageCircle },
+    { to: '/app/reports', label: 'Reports', icon: BarChart3 },
   ]},
   { group: 'SETTINGS', items: [
     { to: '/app/settings', label: 'Studio', icon: Settings },
+    { to: '/app/billing', label: 'Subscription', icon: CreditCard },
   ]},
 ]
 

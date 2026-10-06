@@ -1,9 +1,10 @@
 import { useSyncExternalStore } from 'react'
 import { nid, todayIso } from './format.ts'
-import { ADMIN_EMAIL, DEMO_PIN, seedState } from './seed.ts'
-import type { AppState, Customer, Measurement, Order, Payment, Stage, User } from './types.ts'
+import { ADMIN_EMAIL, ADMIN_PASSWORD, DEMO_PIN, seedState } from './seed.ts'
+import { paidBilling, trialBilling } from './plans.ts'
+import type { AppState, Billing, Customer, Measurement, Order, Payment, Stage, Studio, User } from './types.ts'
 
-const KEY = 'atelieros-v1'
+const KEY = 'atelieros-v2'
 
 type Session = { email: string; viewingStudioId: string | null }
 
@@ -11,10 +12,33 @@ let state: AppState = load()
 let session: Session | null = readSession()
 const listeners = new Set<() => void>()
 
+function fallbackBilling(): Billing {
+  return {
+    plan: 'studio_pro',
+    status: 'active',
+    trialEndsOn: todayIso(),
+    periodEndsOn: todayIso(),
+    requestedPlan: null,
+  }
+}
+
+function normalize(raw: AppState): AppState {
+  return {
+    ...raw,
+    studios: (raw.studios || []).map((s) => ({
+      ...s,
+      billing: s.billing || fallbackBilling(),
+    })),
+    users: (raw.users || []).map((u) =>
+      u.isAdmin || u.email.toLowerCase() === ADMIN_EMAIL ? { ...u, password: ADMIN_PASSWORD, isAdmin: true, role: 'admin' } : u,
+    ),
+  }
+}
+
 function load(): AppState {
   try {
-    const raw = localStorage.getItem(KEY)
-    if (raw) return JSON.parse(raw) as AppState
+    const raw = localStorage.getItem(KEY) || localStorage.getItem('atelieros-v1')
+    if (raw) return normalize(JSON.parse(raw) as AppState)
   } catch {
     /* empty */
   }
@@ -74,10 +98,9 @@ export function login(email: string, password: string) {
   return user
 }
 
-export function loginDemo(pin: string, asAdmin = false) {
+export function loginDemo(pin: string) {
   if (pin !== DEMO_PIN) throw new Error('Demo PIN is 2026')
-  const email = asAdmin ? ADMIN_EMAIL : 'priya@meenakshi.atelier'
-  const user = state.users.find((u) => u.email === email)!
+  const user = state.users.find((u) => u.email === 'priya@meenakshi.atelier')!
   writeSession({ email: user.email, viewingStudioId: user.studioId })
   return user
 }
@@ -87,7 +110,10 @@ export function logout() {
 }
 
 export function homeAfter(user: User) {
-  return user.isAdmin ? '/admin' : '/app'
+  if (user.isAdmin) return '/admin'
+  const s = state.studios.find((x) => x.id === user.studioId)
+  if (!billingActive(s)) return '/app/billing'
+  return '/app'
 }
 
 export function resetDemo() {
@@ -240,6 +266,7 @@ export function createStudio(input: {
     garments: input.garments,
     teamSize: input.teamSize,
     createdOn: todayIso(),
+    billing: trialBilling(),
   }
   const user: User = {
     email: input.email,
@@ -268,4 +295,71 @@ export function completeOnboarding(studioPatch: Partial<AppState['studios'][0]>)
     studios: state.studios.map((s) => (s.id === sid ? { ...s, ...studioPatch } : s)),
   }
   save()
+}
+
+export function billingOf(s?: Studio | null): Billing {
+  return s?.billing || fallbackBilling()
+}
+
+export function billingActive(s?: Studio | null) {
+  const u = currentUser()
+  if (u?.isAdmin) return true
+  const b = billingOf(s)
+  if (b.status === 'active') return true
+  if (b.status === 'trialing' && b.trialEndsOn >= todayIso()) return true
+  return false
+}
+
+export function hasPro(s?: Studio | null) {
+  const b = billingOf(s)
+  return b.plan === 'studio_pro' || b.status === 'trialing'
+}
+
+export function requestPlan(plan: 'studio' | 'studio_pro') {
+  const sid = studioId()
+  if (!sid) return
+  const s = state.studios.find((x) => x.id === sid)
+  if (s?.isDemo) throw new Error('Demo desk cannot subscribe. Create your own studio.')
+  state = {
+    ...state,
+    studios: state.studios.map((x) =>
+      x.id === sid ? { ...x, billing: { ...billingOf(x), requestedPlan: plan } } : x,
+    ),
+  }
+  log(`Requested ${plan} plan`, sid)
+  save()
+}
+
+export function activatePlan(studioRowId: string, plan: 'studio' | 'studio_pro') {
+  const u = currentUser()
+  if (!u?.isAdmin) throw new Error('HQ only')
+  state = {
+    ...state,
+    studios: state.studios.map((x) =>
+      x.id === studioRowId ? { ...x, billing: paidBilling(plan) } : x,
+    ),
+  }
+  log(`HQ activated ${plan} for ${studioRowId}`, studioRowId)
+  save()
+}
+
+export function expireIfNeeded() {
+  const today = todayIso()
+  let changed = false
+  const studios = state.studios.map((s) => {
+    const b = billingOf(s)
+    if (b.status === 'trialing' && b.trialEndsOn < today) {
+      changed = true
+      return { ...s, billing: { ...b, status: 'expired' as const } }
+    }
+    if (b.status === 'active' && b.periodEndsOn && b.periodEndsOn < today) {
+      changed = true
+      return { ...s, billing: { ...b, status: 'expired' as const } }
+    }
+    return s
+  })
+  if (changed) {
+    state = { ...state, studios }
+    save()
+  }
 }

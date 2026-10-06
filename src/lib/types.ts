@@ -132,6 +132,16 @@ export type Activity = {
   text: string
 }
 
+export type PlanId = 'trial' | 'studio' | 'studio_pro'
+
+export type Billing = {
+  plan: PlanId
+  status: 'trialing' | 'active' | 'expired'
+  trialEndsOn: string
+  periodEndsOn: string | null
+  requestedPlan?: PlanId | null
+}
+
 export type Studio = {
   id: string
   name: string
@@ -144,6 +154,8 @@ export type Studio = {
   garments: string[]
   teamSize: string
   createdOn: string
+  isDemo?: boolean
+  billing: Billing
 }
 
 export type User = {

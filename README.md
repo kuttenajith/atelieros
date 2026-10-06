@@ -1,26 +1,27 @@
 # AtelierOS
 
-**Run your boutique beautifully.**
-
-Studio desk for Indian ateliers — customers, measurements, orders, production, trials, deliveries and payments.
+**Run your boutique beautifully.** The studio desk for Indian ateliers — same product shape as [GoldHour](https://goldhour-chi.vercel.app/).
 
 Live: [atelieros-mu.vercel.app](https://atelieros-mu.vercel.app)
 
-## How to try it
+## Try it
 
-- **Landing:** `/`
-- **Studio demo:** `/login` → **Open Meenakshi Atelier demo** (PIN `2026`)
-- **HQ admin:** `/login` → **Open HQ admin** (`ajithkutten1998@gmail.com` / `2026`)
-- **Customer portal:** `/o/AT-1048` — no login, signed-link style
-- **Create a studio:** `/onboarding`
+- **Landing / pricing:** `/`
+- **Start a boutique:** `/signup` — 14-day trial
+- **Demo floor:** `/login` → PIN `2026` (Meenakshi Atelier, Madurai)
+- **HQ admin:** `/login` with `ajithkutten1998@gmail.com` / `AjithBoutique98@` → `/admin`
+- **Customer portal:** `/o/AT-1048`
+- **Subscribe:** `/app/billing` — Studio ₹999 / Studio Pro ₹1,500 (HQ approves)
 
-## Three desks
+## Plans
 
-| Desk | Who | What they see |
+| Plan | Price | What they get |
 | --- | --- | --- |
-| Studio `/app` | Boutique owner / staff | Their customers, orders, floor, cash |
-| HQ `/admin` | You | Every studio, every customer, every payment; impersonate a floor |
-| Portal `/o/:orderId` | The wearer | Status, trial, balance — no account |
+| Trial | ₹0 / 14 days | Full desk including Pro extras |
+| Studio | ₹999 / month | Customers, measurements, orders, payments, deliveries, customer link |
+| Studio Pro | ₹1,500 / month | Production, trials, WhatsApp desk, reports |
+
+HQ sees every studio, every customer, every payment, and can impersonate a floor or activate a plan.
 
 ## Run locally
 
@@ -30,8 +31,6 @@ npm run dev
 ```
 
 Open http://localhost:5173
-
-This preview keeps data in the browser (`localStorage`) so a boutique owner can walk one complete order without Excel. Inventory, WhatsApp Business API, automations and subscriptions are modelled for later — not in this first desk.
 
 ## License
 

@@ -191,6 +191,9 @@ export const STAGES: Stage[] = [
   'delivered',
 ]
 
+export const STUDIO_STAGES: Stage[] = ['new', 'measurement', 'ready', 'delivered', 'cancelled']
+export const PRO_STAGES: Stage[] = STAGES
+
 export const STAGE_LABEL: Record<Stage, string> = {
   new: 'New',
   measurement: 'Measurement',

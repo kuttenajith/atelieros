@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { NewMenu } from '../components/NewMenu.tsx'
 import { StatusPill } from '../components/StatusPill.tsx'
 import { greeting, money, niceDate, relative } from '../lib/format.ts'
-import { currentUser, dueFor, studioId, useApp } from '../lib/store.ts'
+import { currentUser, dueFor, hasPro, studio, studioId, useApp } from '../lib/store.ts'
 import { STAGE_LABEL, type Stage } from '../lib/types.ts'
 
 const pipeline: Stage[] = ['new', 'cutting', 'stitching', 'trial', 'ready']
@@ -11,6 +11,8 @@ export function Dashboard() {
   const data = useApp()
   const sid = studioId()
   const user = currentUser()
+  const s = studio()
+  const pro = hasPro(s)
   const nav = useNavigate()
   const orders = data.orders.filter((o) => o.studioId === sid && o.stage !== 'cancelled')
   const active = orders.filter((o) => o.stage !== 'delivered')
@@ -40,8 +42,8 @@ export function Dashboard() {
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-4xl">
-            {greeting()}, {user?.name} 
+          <h1 className="font-display text-4xl xl:text-5xl">
+            {greeting()}, {user?.name}
           </h1>
           <p className="mt-1 text-mute">{niceDate()}</p>
         </div>
@@ -53,7 +55,7 @@ export function Dashboard() {
           [active.length, 'Active orders'],
           [money(outstanding), 'Outstanding'],
           [dueWeek.length, 'Due this week'],
-          [trialsToday.length, 'Trials today'],
+          [pro ? trialsToday.length : 'Pro', pro ? 'Trials today' : 'Trials · Studio Pro'],
         ].map(([n, l]) => (
           <article key={String(l)} className="rounded-2xl border border-line bg-surface p-5">
             <p className="font-display text-3xl">{n}</p>
@@ -91,16 +93,26 @@ export function Dashboard() {
             ))}
           </ol>
         </section>
-        <section className="rounded-2xl border border-line bg-surface p-5">
+        <section className="rounded-2xl border border-line bg-surface p-5 xl:p-7">
           <h2 className="font-display text-2xl">Production</h2>
-          <div className="mt-4 grid grid-cols-5 gap-2 text-center">
-            {pipeline.map((s) => (
-              <button key={s} className="rounded-xl bg-bg py-3" onClick={() => nav(`/app/production?stage=${s}`)}>
-                <p className="font-display text-2xl">{orders.filter((o) => o.stage === s).length}</p>
-                <p className="mt-1 text-[11px] capitalize text-mute">{STAGE_LABEL[s]}</p>
-              </button>
-            ))}
-          </div>
+          {pro ? (
+            <div className="mt-4 grid grid-cols-5 gap-2 text-center">
+              {pipeline.map((st) => (
+                <button key={st} className="rounded-xl bg-bg py-3" onClick={() => nav(`/app/production?stage=${st}`)}>
+                  <p className="font-display text-2xl">{orders.filter((o) => o.stage === st).length}</p>
+                  <p className="mt-1 text-[11px] capitalize text-mute">{STAGE_LABEL[st]}</p>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-mute">
+              Kanban is Studio Pro.{' '}
+              <Link to="/app/billing" className="text-primary">
+                Upgrade
+              </Link>{' '}
+              to see cutting, stitching and trial on the floor.
+            </p>
+          )}
         </section>
       </div>
 

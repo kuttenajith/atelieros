@@ -4,6 +4,8 @@
 
 Live: [atelieros-mu.vercel.app](https://atelieros-mu.vercel.app)
 
+Ivory and rosewood — not GoldHour’s dark gold. Light/dark/system theme. Studio vs Studio Pro actually lock the floor (production, trials, WhatsApp, reports). HQ shows site visits.
+
 ## Try it
 
 - **Landing / pricing:** `/`

@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { PageHeader } from '../components/PageHeader.tsx'
+import { ProGate } from '../components/ProGate.tsx'
 import { day } from '../lib/format.ts'
 import { moveStage, studioId, useApp } from '../lib/store.ts'
 import { STAGE_LABEL, type Stage } from '../lib/types.ts'
@@ -14,9 +15,10 @@ export function Production() {
   const orders = data.orders.filter((o) => o.studioId === sid && o.stage !== 'delivered' && o.stage !== 'cancelled')
 
   return (
+    <ProGate>
     <div>
-      <PageHeader title="Production" subtitle="Drag is a later sprint — tap a card, then move the stage." />
-      <div className="grid gap-3 md:grid-cols-5">
+      <PageHeader title="Production" subtitle="Tap a card, then move the stage. Built for a wide cutting table." />
+      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
         {cols.map((col) => (
           <section key={col} className={`rounded-2xl border p-3 ${highlight === col ? 'border-primary' : 'border-line'} bg-surface`}>
             <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-mute">
@@ -58,5 +60,6 @@ export function Production() {
         ))}
       </div>
     </div>
+    </ProGate>
   )
 }

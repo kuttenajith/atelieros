@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/Button.tsx'
 import { Field, Select, Textarea } from '../components/Field.tsx'
+import { ProGate } from '../components/ProGate.tsx'
 import { PageHeader } from '../components/PageHeader.tsx'
 import { clock } from '../lib/format.ts'
 import { studioId, updateTrial, useApp } from '../lib/store.ts'
@@ -14,6 +15,7 @@ export function Trials() {
   const [open, setOpen] = useState<string | null>(null)
 
   return (
+    <ProGate>
     <div>
       <PageHeader title="Trials" subtitle="Today’s fittings — mark the result before the customer leaves." />
       <div className="space-y-3">
@@ -73,5 +75,6 @@ export function Trials() {
         })}
       </div>
     </div>
+    </ProGate>
   )
 }

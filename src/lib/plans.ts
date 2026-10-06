@@ -1,6 +1,27 @@
 import { addDays, todayIso } from './format.ts'
 import type { Billing, PlanId } from './types.ts'
 
+export const STUDIO_FEATURES = [
+  'Unlimited customers',
+  'Measurements and style library',
+  'Orders, advances and balances',
+  'Deliveries and customer order link',
+]
+
+export const PRO_FEATURES = [
+  'Everything in Studio',
+  'Production kanban (cutting → stitching → ready)',
+  'Trial calendar and alterations',
+  'WhatsApp message desk',
+  'Studio reports',
+]
+
+export const PRO_ROUTES = ['/app/production', '/app/trials', '/app/whatsapp', '/app/reports']
+
+export function isProRoute(path: string) {
+  return PRO_ROUTES.some((r) => path === r || path.startsWith(`${r}/`))
+}
+
 export const PLANS: {
   id: PlanId
   name: string
@@ -24,7 +45,7 @@ export const PLANS: {
     price: '₹999',
     monthly: 999,
     note: 'The boutique desk after the trial.',
-    items: ['Unlimited customers', 'Measurements and styles', 'Orders and payments', 'Deliveries', 'Customer portal links'],
+    items: STUDIO_FEATURES,
     featured: true,
   },
   {
@@ -32,15 +53,8 @@ export const PLANS: {
     name: 'Studio Pro',
     price: '₹1,500',
     monthly: 1500,
-    note: 'The full atelier CRM HQ can switch on for a boutique.',
-    items: [
-      'Everything in Studio',
-      'Production kanban',
-      'Trial calendar',
-      'WhatsApp desk',
-      'Reports',
-      'HQ monitoring',
-    ],
+    note: 'The floor OS — production, fittings and WhatsApp.',
+    items: PRO_FEATURES,
   },
 ]
 

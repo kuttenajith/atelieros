@@ -2,8 +2,8 @@ import { STAGE_LABEL, type CustomerType, type Stage } from '../lib/types.ts'
 import { clsx } from '../lib/clsx.ts'
 
 const stageTone: Record<string, string> = {
-  new: 'bg-[#efe8dc] text-primary-dark',
-  measurement: 'bg-[#efe8dc] text-primary-dark',
+  new: 'bg-blush text-primary-dark',
+  measurement: 'bg-blush text-primary-dark',
   cutting: 'bg-[#e8efe9] text-success',
   stitching: 'bg-[#f4ead8] text-warning',
   trial: 'bg-[#e7eef6] text-[#3d5a80]',
@@ -23,7 +23,7 @@ export function StatusPill({ stage }: { stage: Stage }) {
 
 export function TypePill({ type }: { type: CustomerType }) {
   return (
-    <span className="inline-flex rounded-full bg-[#efe8dc] px-2.5 py-0.5 text-xs font-medium capitalize text-primary-dark">
+    <span className="inline-flex rounded-full bg-blush px-2.5 py-0.5 text-xs font-medium capitalize text-primary-dark">
       {type}
     </span>
   )

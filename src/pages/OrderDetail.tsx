@@ -3,8 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { Button } from '../components/Button.tsx'
 import { Field, Input, Select } from '../components/Field.tsx'
 import { day, money } from '../lib/format.ts'
-import { dueFor, moveStage, paidFor, recordPayment, useApp } from '../lib/store.ts'
-import { STAGES, STAGE_LABEL, type PayMethod, type Stage } from '../lib/types.ts'
+import { dueFor, hasPro, moveStage, paidFor, recordPayment, studio, useApp } from '../lib/store.ts'
+import { PRO_STAGES, STAGE_LABEL, STUDIO_STAGES, type PayMethod, type Stage } from '../lib/types.ts'
 
 export function OrderDetail() {
   const { id } = useParams()
@@ -17,7 +17,9 @@ export function OrderDetail() {
   const c = data.customers.find((x) => x.id === o.customerId)
   const paid = paidFor(o.id)
   const due = dueFor(o)
-  const idx = STAGES.indexOf(o.stage)
+  const pro = hasPro(studio())
+  const stages = pro ? PRO_STAGES.filter((s) => s !== 'cancelled') : STUDIO_STAGES.filter((s) => s !== 'cancelled')
+  const idx = stages.indexOf(o.stage)
 
   return (
     <div>
@@ -44,8 +46,8 @@ export function OrderDetail() {
       </div>
 
       <ol className="mt-6 flex flex-wrap gap-2">
-        {STAGES.filter((s) => s !== 'cancelled').map((s, i) => (
-          <li key={s} className={`rounded-full px-3 py-1 text-xs ${i <= idx ? 'bg-primary text-white' : 'bg-surface text-mute'}`}>
+        {stages.map((s, i) => (
+          <li key={s} className={`rounded-full px-3 py-1 text-xs ${i <= idx ? 'bg-primary text-cream' : 'bg-surface text-mute'}`}>
             {i < idx ? '✓ ' : i === idx ? '● ' : '○ '}
             {STAGE_LABEL[s]}
           </li>
@@ -64,7 +66,7 @@ export function OrderDetail() {
           <div className="mt-4">
             <Field label="Move stage">
               <Select value={o.stage} onChange={(e) => moveStage(o.id, e.target.value as Stage)}>
-                {STAGES.map((s) => (
+                {(pro ? PRO_STAGES : STUDIO_STAGES).map((s) => (
                   <option key={s} value={s}>
                     {STAGE_LABEL[s]}
                   </option>

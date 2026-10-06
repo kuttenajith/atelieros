@@ -27,6 +27,7 @@ import { Signup } from './pages/Signup.tsx'
 import { Styles } from './pages/Styles.tsx'
 import { Trials } from './pages/Trials.tsx'
 import { WhatsApp } from './pages/WhatsApp.tsx'
+import { VisitTracker } from './components/VisitTracker.tsx'
 
 function basename() {
   const raw = import.meta.env.BASE_URL
@@ -37,6 +38,7 @@ function basename() {
 export function App() {
   return (
     <BrowserRouter basename={basename()}>
+      <VisitTracker />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />

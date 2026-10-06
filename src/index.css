@@ -1,24 +1,37 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'DM Serif Display', Georgia, serif;
-  --color-bg: #f8f6f2;
-  --color-surface: #ffffff;
-  --color-ink: #242321;
-  --color-mute: #77736c;
-  --color-line: #e7e2da;
-  --color-primary: #9a6a3a;
-  --color-primary-dark: #76502c;
-  --color-success: #477a5b;
-  --color-warning: #b17a32;
-  --color-danger: #b85450;
-  --color-night: #0c0a09;
-  --color-night-2: #14110e;
-  --color-night-3: #1c1814;
-  --color-gold: #c9a227;
-  --color-gold-soft: #e8d5a3;
-  --color-cream: #f4ead8;
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --color-bg: #f7f3ef;
+  --color-surface: #fffcfa;
+  --color-ink: #1c1614;
+  --color-mute: #7d746c;
+  --color-line: #e8dfd6;
+  --color-primary: #8b4d55;
+  --color-primary-dark: #6a3940;
+  --color-success: #3f6f5a;
+  --color-warning: #b07a3a;
+  --color-danger: #b24a4a;
+  --color-rose: #c97b82;
+  --color-blush: #f3e6e4;
+  --color-night: #161314;
+  --color-night-2: #1f1b1c;
+  --color-cream: #f7f3ef;
+  --color-gold: #8b4d55;
+  --color-gold-soft: #c97b82;
+}
+
+html[data-theme='dark'] {
+  --color-bg: #141112;
+  --color-surface: #1d191a;
+  --color-ink: #f4ece8;
+  --color-mute: #a79a94;
+  --color-line: #3a3233;
+  --color-primary: #d08a90;
+  --color-primary-dark: #e4b4b8;
+  --color-blush: #2a2223;
+  --color-cream: #f4ece8;
 }
 
 html {
@@ -38,15 +51,17 @@ body {
   font-family: var(--font-sans);
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  letter-spacing: -0.03em;
 }
 
 ::selection {
-  background: rgba(154, 106, 58, 0.22);
+  background: rgba(139, 77, 85, 0.22);
 }
 
 input,
@@ -55,8 +70,21 @@ textarea {
   font-family: inherit;
 }
 
+.page-wide {
+  width: 100%;
+  max-width: min(1760px, 100%);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 2.4vw, 3rem);
+}
+
+.card {
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  border-radius: 1.25rem;
+}
+
 .skeleton {
-  background: linear-gradient(90deg, #efeae3 25%, #f6f2ec 50%, #efeae3 75%);
+  background: linear-gradient(90deg, var(--color-blush) 25%, var(--color-surface) 50%, var(--color-blush) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.2s ease-in-out infinite;
   border-radius: 8px;

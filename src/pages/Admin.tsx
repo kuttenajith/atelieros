@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/Button.tsx'
 import { Input } from '../components/Field.tsx'
@@ -7,18 +7,24 @@ import { StatusPill } from '../components/StatusPill.tsx'
 import { money } from '../lib/format.ts'
 import { dueFor, impersonateStudio, resetDemo, activatePlan, billingOf, useApp } from '../lib/store.ts'
 import { planName } from '../lib/plans.ts'
+import { loadVisits, visitsToday, visitsWeek } from '../lib/visits.ts'
+
+function subscribeVisits(fn: () => void) {
+  window.addEventListener('atelieros-visits', fn)
+  return () => window.removeEventListener('atelieros-visits', fn)
+}
 
 export function Admin() {
   const data = useApp()
   const nav = useNavigate()
   const [q, setQ] = useState('')
   const [open, setOpen] = useState<string | null>(data.studios[0]?.id || null)
+  const visits = useSyncExternalStore(subscribeVisits, loadVisits, loadVisits)
 
   const studios = useMemo(
     () => data.studios.filter((s) => `${s.name} ${s.owner} ${s.city}`.toLowerCase().includes(q.toLowerCase())),
     [data.studios, q],
   )
-
   const allOutstanding = data.orders.reduce((s, o) => s + dueFor(o), 0)
 
   return (
@@ -33,19 +39,31 @@ export function Admin() {
           </Button>
         }
       />
-      <div className="grid gap-3 sm:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {[
           [studios.length, 'Studios'],
           [data.customers.length, 'Customers'],
           [data.orders.filter((o) => o.stage !== 'delivered' && o.stage !== 'cancelled').length, 'Open orders'],
           [money(allOutstanding), 'Outstanding'],
+          [visitsToday(visits), 'Visits today'],
+          [visits.sessions, 'Sessions'],
         ].map(([n, l]) => (
-          <article key={String(l)} className="rounded-2xl border border-line bg-surface p-4">
+          <article key={String(l)} className="rounded-2xl border border-line bg-surface p-4 xl:p-5">
             <p className="font-display text-3xl">{n}</p>
             <p className="text-xs text-mute">{l}</p>
           </article>
         ))}
       </div>
+      <p className="mt-2 text-xs text-mute">{visitsWeek(visits)} visits this week · {visits.total} all time</p>
+      {visits.recent.length ? (
+        <ul className="mt-3 flex flex-wrap gap-2 text-xs text-mute">
+          {visits.recent.slice(0, 8).map((r, i) => (
+            <li key={`${r.at}-${i}`} className="rounded-full border border-line bg-surface px-3 py-1">
+              {r.path} · {new Date(r.at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <Input className="mt-6 max-w-sm" placeholder="Search studios..." value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="mt-4 space-y-4">
         {studios.map((s) => {

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { BrandMark } from '../components/BrandMark.tsx'
 import { Button } from '../components/Button.tsx'
 import { Field, Input } from '../components/Field.tsx'
+import { ThemeToggle } from '../components/ThemeToggle.tsx'
 import { createStudio, homeAfter } from '../lib/store.ts'
 
 export function Signup() {
@@ -44,42 +45,45 @@ export function Signup() {
   }
 
   return (
-    <div className="min-h-dvh bg-night px-4 py-12 text-cream sm:px-6">
+    <div className="min-h-dvh bg-bg px-4 py-12 sm:px-6">
       <div className="mx-auto max-w-lg">
-        <BrandMark light />
+        <div className="flex items-center justify-between">
+          <BrandMark />
+          <ThemeToggle compact />
+        </div>
         <h1 className="mt-10 font-display text-4xl sm:text-5xl">Start your boutique desk</h1>
         <p className="mt-3 text-mute">
-          14 days free. Then ₹999 / month for Studio, or ₹1,500 for Studio Pro (production, WhatsApp, reports). HQ watches every studio from the command desk.
+          14 days free with Studio Pro extras. Then ₹999 Studio or ₹1,500 Pro — wherever you stitch.
         </p>
         <form onSubmit={submit} className="mt-10 space-y-4">
           <Field label="Studio name">
-            <Input className="border-white/15 bg-night-2 text-cream" required value={studioName} onChange={(e) => setStudioName(e.target.value)} />
+            <Input required value={studioName} onChange={(e) => setStudioName(e.target.value)} />
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Owner">
-              <Input className="border-white/15 bg-night-2 text-cream" required value={owner} onChange={(e) => setOwner(e.target.value)} />
+              <Input required value={owner} onChange={(e) => setOwner(e.target.value)} />
             </Field>
             <Field label="City">
-              <Input className="border-white/15 bg-night-2 text-cream" required value={city} onChange={(e) => setCity(e.target.value)} placeholder="Madurai" />
+              <Input required value={city} onChange={(e) => setCity(e.target.value)} placeholder="Any city" />
             </Field>
           </div>
           <Field label="WhatsApp / phone">
-            <Input className="border-white/15 bg-night-2 text-cream" required value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} inputMode="tel" />
+            <Input required value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} inputMode="tel" />
           </Field>
           <Field label="Email">
-            <Input className="border-white/15 bg-night-2 text-cream" type="email" required value={email} onChange={(e) => setEmail(e.target.value.trim())} />
+            <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value.trim())} />
           </Field>
           <Field label="Password (8+ characters)">
-            <Input className="border-white/15 bg-night-2 text-cream" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
           </Field>
           {error ? <p className="text-sm text-danger">{error}</p> : null}
-          <Button type="submit" tone="gold" className="w-full" disabled={busy}>
+          <Button type="submit" className="w-full" disabled={busy}>
             {busy ? 'Creating…' : 'Create studio · 14-day trial'}
           </Button>
         </form>
         <p className="mt-6 text-sm text-mute">
           Already have a desk?{' '}
-          <Link to="/login" className="text-gold-soft">
+          <Link to="/login" className="text-primary">
             Sign in
           </Link>
         </p>

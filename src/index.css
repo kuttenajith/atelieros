@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --color-bg: #f8f6f2;
+  --color-surface: #ffffff;
+  --color-ink: #242321;
+  --color-mute: #77736c;
+  --color-line: #e7e2da;
+  --color-primary: #9a6a3a;
+  --color-primary-dark: #76502c;
+  --color-success: #477a5b;
+  --color-warning: #b17a32;
+  --color-danger: #b85450;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: rgba(154, 106, 58, 0.22);
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #efeae3 25%, #f6f2ec 50%, #efeae3 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}

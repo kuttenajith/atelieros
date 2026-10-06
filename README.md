@@ -4,7 +4,7 @@
 
 Studio desk for Indian ateliers — customers, measurements, orders, production, trials, deliveries and payments.
 
-Live: will be published on Vercel after first deploy.
+Live: [atelieros-mu.vercel.app](https://atelieros-mu.vercel.app)
 
 ## How to try it
 
